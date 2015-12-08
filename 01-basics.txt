@@ -1,0 +1,140 @@
+@@
+1. INVOCATION ON THE COMMAND LINE
+
+If we have a text file:
+
+cat names.txt
+Gretchen Galloway
+Isaac Steele
+Wayne Myers
+Lillith Lee
+Molly Blackwell
+Maia Arnold
+
+we can reverse the first and last names by issuing this command
+
+$ awk '{print $2, $1}' names.txt 
+Galloway Gretchen
+Steele Isaac
+Myers Wayne
+Lee Lillith
+Blackwell Molly
+Arnold Maia
+
+We must put most awk input into (single) quotes because many awk characters have special meaning for the shell.
+
+@@
+2. FIELDS AND DELIMITERS
+
+By default, awk expects records (lines) populated with fields (~words) separated by whitespace (spaces and tabs).
+
+
+@@
+3. COMMA IN THE OUTPUT
+
+Comma in the print command denotes a white space, i.e. print $2, 1 means 'print field 2 then a whitespace and then field 1'.
+
+If we remove the comma from the print statement we used previously, this will concatenate fields within records
+
+$ awk '{print $2 $1}' names.txt 
+GallowayGretchen
+SteeleIsaac
+MyersWayne
+LeeLillith
+BlackwellMolly
+ArnoldMaia
+
+@@
+4. LITERAL COMMA IN THE OUTPUT
+
+To insert a literal comma, we just concatenate it with other output (the literal string is marked with double quotes - ""):
+
+$ awk '{print $2 ", " $1}' names.txt 
+Galloway, Gretchen
+Steele, Isaac
+Myers, Wayne
+Lee, Lillith
+Blackwell, Molly
+Arnold, Maia
+
+@@
+5. FIELD 0 - ENTIRE LINE
+
+Field zero denotes an entire line:
+
+awk '{print $0}' names.txt 
+Gretchen Galloway
+Isaac Steele
+Wayne Myers
+Lillith Lee
+Molly Blackwell
+Maia Arnold
+
+The above is essentially effective to 'cat names.txt'. We can also use print without arguments to achieve the same effect.
+
+@@
+6. THE ACTION
+
+The action is enclosed in curly brackets. 
+
+In,
+
+$ awk '{print}' names.txt
+
+'print' is the action (i.e. 'print each line').
+
+@@
+7. NUMBER OF FIELDS IN A RECORD
+
+NF denotes the number of fields in a record. This command tells awk to prepend the number of words (==fields) in each line of the file:
+
+$ awk '{print NF, $0} dukeofyork.txt
+
+@@
+8. PATTERNS
+
+We can tell awk to apply the action only to specific lines. For example, this command prints lines (along with word count) only in lines where the word 'Gretchen' occurs.
+
+$ awk '/up/{print NF, $0}' dukeofyork.txt 
+10 He marched them up to the top of the hill
+8 And when they were up they were up
+7 And when they were only half-way up
+6 They were neither up nor down
+
+The string enclosed in // is a regular expression.
+
+@@
+9. LIMITING ACTIONS BASED ON OTHER PARAMETERS
+
+This will only print lines with word count equal to 2.
+
+$ awk 'NF==6{print NF, $0}' dukeofyork.txt 
+6 The grand old Duke of York
+6 And he marched them down again
+6 They were neither up nor down
+
+@@
+10. USING ONLY THE PATTERN
+
+If we specify only the pattern, then the default action upon a match is to print the line.
+
+wk '/up/' dukeofyork.txt 
+He marched them up to the top of the hill
+And when they were up they were up
+And when they were only half-way up
+They were neither up nor down
+
+@@
+11. COMBINING MULTIPLE PATTERN/ACTION PAIRS
+
+$ awk '/up/{print "UP:", NF, $0} /down/{print "DOWN:", NF, $0}' dukeofyork.txt 
+UP: 10 He marched them up to the top of the hill
+DOWN: 6 And he marched them down again
+UP: 8 And when they were up they were up
+DOWN: 8 And when they were down they were down
+UP: 7 And when they were only half-way up
+UP: 6 They were neither up nor down             <---- MATCHES BOTH PATTERNS: match 1 - action 1
+DOWN: 6 They were neither up nor down           <---- MATCHES BOTH PATTERNS: match 2 - action 2
+
+
+
