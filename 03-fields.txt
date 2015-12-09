@@ -1,0 +1,99 @@
+@@
+1. MULTIPLE CONSECUTIVE SEPARATORS ARE TREATED AS A SINGLE ONE
+
+awk '{print $2}'
+one two three
+two                     <--- 
+one     two     three
+two
+one   two         three
+two
+
+@@
+2. THE FIELD SEPARATOR MAY BE ANY STRING OF CHARACTERS, NOT JUST A SINGLE ONE.
+
+$ awk -F ABC '{print $2}'
+oneABCtwoABCthree
+two
+
+@@
+3. THE FIELD SEPARATOR MAY BE A REGULAR EXPRESSION.
+
+$ awk -F '[,!]' '{print $2}'
+one!two,three
+two
+
+@@
+4. FIELD SEPARATOR VARIABLE: FS.
+
+Note that assignment may take effect later than you expect. See the way the following invocation works:
+
+$ awk '{FS=","; print $2}'
+one,two,three
+                        <--- NOTHING IS OUTPUT since the record is split into fields BEFORE actions are taken for the record
+                        <--- HERE IS WHERE THE FS ASSIGNMENT TAKES EFFECT!
+four,five,six 
+five                    <--- This time, awk splits the record into fields as we expect.
+
+@@
+5. To work around the problem with FS assignment, use the 'BEGIN' statement:
+
+Gets executed before           Gets executed for each line,
+reading any records    +------ including the first
+          |            |
+          |            |
+    VVVVVVVVVVVVVV VVVVVVVVVV
+
+awk 'BEGIN{FS=","} {print $2}'
+one,two,three
+two
+four,five,six 
+five
+
+@@
+6. RECORD SEPARATOR VARIABLE: RS.
+
+Suppose our records are separated by a character that is not a newline. Use RS (record separator) to handle such input. Suppose we hhave a file:
+
+$ cat onebigline.txt 
+one,two,three!four,five,six!seven,eight,nine!ten,eleven,twelve
+
+As we can see, fields are separated with commas, and records are separated with exclamation marks. Now, if we set RS and FS accordingly, we may pick individual fields of our choice from the file.
+
+$ awk 'BEGIN{RS="!";FS=","} {print $2}' onebigline.txt 
+two
+five
+eight
+eleven
+
+@@
+7. EMPTY STRING AS A VALUE OF RS
+
+If we set RS to an empty string, this will denote a blank line being your record separator.
+
+Supose we have a file:
+
+$ cat address.txt
+Gladys Rim
+322 New Horizon Blvd
+Milwaukee, WI 53207
+
+Yuki Whobrey
+1 State Route 27
+Taylor, MI 48180
+
+If we want to print the name, address and the city + zip code in one line, we can use:
+
+$ awk 'BEGIN{RS="";FS="\n"} {name=$1;address=$2;citistatezip=$3;print name ", " address ", " citistatezip}' address.txt 
+Gladys Rim, 322 New Horizon Blvd, Milwaukee, WI 53207
+Yuki Whobrey, 1 State Route 27, Taylor, MI 48180
+
+@@
+8. OUTPUT RECORD AND FIELD SEPARATORS
+
+A comma in a print statement outputs the current value of OFS, the end of action appends the ORS to output.
+
+awk 'BEGIN{OFS=", ";ORS="!"} {print $2, $1}' names.txt 
+Galloway, Gretchen!Steele, Isaac!Myers, Wayne!Lee, Lillith!Blackwell, Molly!Arnold, Maia!Reese, Lev!Guthrie, Carlos!Buck, Sophia!Mitchel, Vincent!Harris, Buffy!Miles, Reuben!Fowler, Brendan!Hancock, Mason!Boone, Nigel!Foreman, Gretchen!Goodman, Serena!Velez, Shoshana!Hughes, Eve!
+
+This produced output separated by ", " sequence (fields) and ! characters (records).

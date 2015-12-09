@@ -1,0 +1,45 @@
+AWK COMMAND LINE ARGUMENTS
+
+@@
+1. AWK PROGRAM FILE NAME: -f
+
+awk -f swap names.txt
+
+where swap is:
+
+$ cat swap
+{print $2, $1}
+
+@@
+2. FIELD SEPARATOR: -F
+
+A space and/or a tab is the field separator by default
+
+$ awk '{print $2}'
+one two three
+
+If want to separate input with spaces, we use -F:
+
+$ awk -F, '{print $2}'
+one,two,three
+two
+
+In many implementations of awk, -F t denotes a tab separator.
+
+@@
+3. SETTING A VARIABLE NAME: -v
+
+$ awk -v hi=HELLO '{print $1, hi}'
+hello awk
+hello HELLO
+nice to meet you
+nice HELLO
+
+@@
+4. SPECIFYING FILES
+
+We can specify multiple files:
+
+$ awk '{print $1}' names.txt dukeofyork.txt 
+Gretchen
+
