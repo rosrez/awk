@@ -1,0 +1,43 @@
+@@
+1. ARITHMETIC OPERATORS
+
+@@
+1. Basic operators
+
++,-,*,/
+
+% - modulo,
+^ - power,
+++ - increment,
+-- - decrement
+
+prefix and postfix notation for increment and decrement.
+
+
+@@
+2. Also possible are these forms:
+
++=
+-=
+*=
+/=
+%=
+^=
+
+@@
+3. Comparison operators (may be applied to string)
+
+==
+!=
+<
+<=
+>
+>=
+
+@@
+4. String operators:
+
+A space: concatenation operator
+~        matches regular expression
+!~       doesn't match regular expression
+

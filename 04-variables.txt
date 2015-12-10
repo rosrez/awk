@@ -1,0 +1,183 @@
+@@
+1. BUILT-IN VARIABLE NR=<RECORD NUMBER>
+
+To print the 5th line in the file, we can use this command:
+
+$ awk 'NR==5{print}' names.txt 
+Molly Blackwell
+
+To number all the lines within a file, we can use this command:
+
+$ awk '{print NR ":" $0}' names.txt
+1:Gretchen Galloway
+2:Isaac Steele
+3:Wayne Myers
+4:Lillith Lee
+5:Molly Blackwell
+6:Maia Arnold
+
+@@
+2. BUILT-IN VARIABLES: FILENAME, FNR
+
+If we supply multiple files to awk, the input gets concatenated. The NR variable then denotes the line number in the concatenated input. 
+
+If we need to distinguish between input files, we can use the FILENAME variable:
+
+$ awk '{print NR, FILENAME, $0}' names.txt dukeofyork.txt 
+1 names.txt Gretchen Galloway
+2 names.txt Isaac Steele
+3 names.txt Wayne Myers
+4 names.txt Lillith Lee
+5 names.txt Molly Blackwell
+6 names.txt Maia Arnold
+... <omitted for brevity>
+
+18 names.txt Shoshana Velez
+19 names.txt Eve Hughes
+20 dukeofyork.txt The grand old Duke of York
+21 dukeofyork.txt He had ten thousand men
+22 dukeofyork.txt He marched them up to the top of the hill
+
+If we need to track line numbers within each file, we can use the FNR variable:
+
+1 names.txt Gretchen Galloway
+2 names.txt Isaac Steele
+3 names.txt Wayne Myers
+4 names.txt Lillith Lee
+5 names.txt Molly Blackwell
+6 names.txt Maia Arnold
+... <omitted for brevity>
+
+18 names.txt Shoshana Velez
+19 names.txt Eve Hughes
+1 dukeofyork.txt The grand old Duke of York
+2 dukeofyork.txt He had ten thousand men
+3 dukeofyork.txt He marched them up to the top of the hill
+
+@@@
+3. FIELD VARIABLES.
+
+@@
+1. Basic form.
+
+print $0, $1... there is no limit on the number of field.
+
+@@
+2. Field variables can be referenced by variables. For example, if we want to print the last field in a record, we can use:
+
+$ awk '{print $NR}' dukeofyork.txt 
+The
+had
+them
+them
+up
+they
+up
+
+@@
+3. We can use an expression to denote a field; the following prints the penultimate (NR-1)-th word of each line:
+
+$ awk '{print $(NR-1)}' dukeofyork.txt 
+The grand old Duke of York
+He
+marched
+marched
+were
+down
+half-way
+
+@@
+4. We can even use the field value to reference a field value:
+
+$ awk '{print $($1)}'
+4 one two three four
+three
+3 1 2 3
+2
+
+@@
+5. We can assign field values. This replaces the second words in input lines with TWO:
+
+$ awk '{$2="TWO"; print}' dukeofyork.txt 
+The TWO old Duke of York
+He TWO ten thousand men
+He TWO them up to the top of the hill
+And TWO marched them down again
+And TWO they were up they were up
+And TWO they were down they were down
+And TWO they were only half-way up
+They TWO neither up nor down
+
+This form of assignment occurs in awk's working memory, it never updates an input file.
+
+@@
+6. We can assign to fields that don't yet exist to get longer lines. In this example:
+
+$ awk 'BEGIN{OFS="!"} {$11="ELEVEN"; print}' dukeofyork.txt 
+The!grand!old!Duke!of!York!!!!!ELEVEN
+He!had!ten!thousand!men!!!!!!ELEVEN
+He!marched!them!up!to!the!top!of!the!hill!ELEVEN
+And!he!marched!them!down!again!!!!!ELEVEN
+And!when!they!were!up!they!were!up!!!ELEVEN
+And!when!they!were!down!they!were!down!!!ELEVEN
+And!when!they!were!only!half-way!up!!!!ELEVEN
+They!were!neither!up!nor!down!!!!!ELEVEN
+
+... we extend each record to contain 11 fields. Records with less than 10 fields are padded with empty fields.
+
+Note that such assignments change the value of $0 and may change NF as well. The modified example shows this:
+
+$ awk 'BEGIN{OFS="!"} {$11="ELEVEN"; print NF, $0}' dukeofyork.txt 
+11!The!grand!old!Duke!of!York!!!!!ELEVEN
+11!He!had!ten!thousand!men!!!!!!ELEVEN
+11!He!marched!them!up!to!the!top!of!the!hill!ELEVEN
+11!And!he!marched!them!down!again!!!!!ELEVEN
+11!And!when!they!were!up!they!were!up!!!ELEVEN
+11!And!when!they!were!down!they!were!down!!!ELEVEN
+11!And!when!they!were!only!half-way!up!!!!ELEVEN
+11!They!were!neither!up!nor!down!!!!!ELEVEN
+
+@@
+7. We can also assign to $0.
+
+$ awk '{$0="one two three"; print NF, $2}' dukeofyork.txt 
+3 two <--- input record now contains 3 words, the second of which is 'two'
+3 two
+3 two
+3 two
+3 two
+3 two
+3 two
+3 two
+
+@@@
+4. AWK VARIABLES ARE CASE SENSITIVE
+
+$ awk '{a=$1; A=$2; print a,A}'
+one two
+one two
+
+@@@
+5. AWK TREATS VARIABLES AS INTEGERS OR STRINGS, AS APPROPRIATE.
+
+@@.
+1. Concatenation implies strings:
+
+$ awk '{a=1; b=3; print a b}'
+            <------ NOTE THAT AWK EXPECTS A LINE OF INPUT (MAY BE EMPTY) BEFORE IT PRODUCES A RESULT
+13
+
+@@
+2. Addition implies integers:
+
+$ awk '{a=1; b=3; print a + b}'
+            <------ A LINE OF INPUT, AGAIN
+4
+
+@@
+3. Variables that can't be converted to numbers are implicitly treated as having the value of zero in arithmetic expressions:
+
+$ awk '{a=1; b="Bob"; print a + b}'     <---- "Bob" EVALUATES TO ZERO HERE!
+
+1
+

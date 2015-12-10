@@ -1,0 +1,8 @@
+@@
+1. BASIC ARRAY SYNTAX.
+
+$ awk '{a[1]=$1; a[2]=$2; a[3]=$3; print a[1], a[2], a[3]}'
+one two three
+one two three
+
+Once you use a variable as an array anywhere in the program, awk will treat the variable as an array throughout the program and won't allow using it as a simple variable.

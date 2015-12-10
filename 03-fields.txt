@@ -96,4 +96,29 @@ A comma in a print statement outputs the current value of OFS, the end of action
 awk 'BEGIN{OFS=", ";ORS="!"} {print $2, $1}' names.txt 
 Galloway, Gretchen!Steele, Isaac!Myers, Wayne!Lee, Lillith!Blackwell, Molly!Arnold, Maia!Reese, Lev!Guthrie, Carlos!Buck, Sophia!Mitchel, Vincent!Harris, Buffy!Miles, Reuben!Fowler, Brendan!Hancock, Mason!Boone, Nigel!Foreman, Gretchen!Goodman, Serena!Velez, Shoshana!Hughes, Eve!
 
-This produced output separated by ", " sequence (fields) and ! characters (records).
+This produced output separated by ", " sequence (fields) and ! characters (records)
+
+@@
+9. EXAMPLE.
+
+USING AWK, CONVERT A COMMA-SEPARATED FILE WITH 3 FIELDS INTO A TAB SEPARATED FILE WITH THE SAME TEXT.
+
+1. We can use this command:
+
+awk -F, {print $1 "\t" $2 "\t" $3}' inputfile.csv
+
+2. Or, we can use the FS and OFS variables to achieve the same effect:
+
+$ awk 'BEGIN{FS=",";OFS="\t"} {print $1,$2,$3}'
+one,two,three
+one two three
+four,five,six
+four    five    six
+seven,eight,nine
+seven   eight   nine
+
+3. Note that that if we don't know the exact number of fields, the task becomes more complex since we can't use this syntax:
+
+awk 'BEGIN{FS=',"; OFS="\t"} {print}'
+
+print without arguments is equivalent to print $0, and $0 is the record as-is, not split. So OFS will not take effect here. To work around the problem, a for-loop is needed.
