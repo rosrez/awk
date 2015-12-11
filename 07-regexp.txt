@@ -1,0 +1,44 @@
+@@
+1. REGULAR EXPRESSION SYNTAX IS VERY SIMILAR TO THAT OF GREP AND SED.
+
+2. ^ and $ DENOTE A MATCH IN THE STRING BEING COMPARED (USUALLY A FIELD OR SIMILAR).
+
+^ and $ characters do not indicate a match of the whole line.
+
+For example, this prints all lines of dukeofyork.txt that CONTAIN the string 'the':
+
+$ awk '$3 ~ /the/{print}' dukeofyork.txt 
+He marched them up to the top of the hill
+And when they were up they were up
+And when they were down they were down
+And when they were only half-way up
+They were neither up nor down               <---- 'neither' CONTAINS 'the'
+
+And this prints all lines of the same file that BEGIN with the string 'the':
+
+$ awk '$3 ~ /^the/{print}' dukeofyork.txt 
+He marched them up to the top of the hill
+And when they were up they were up
+And when they were down they were down
+And when they were only half-way up
+                                            <---- 'neither' DOES NOT BEGIN WITH 'the', THE LINE IS GONE.
+
+@@
+3.
+
+@@
+4. GREEDINESS
+
+Suppose we want to match an HTML tag <i> in the string: <i>italic text</i>. Then
+
+/<.+>/ will match all of <i>italic text</i>
+                         -----------------
+
+The reason is that regular expressions are greedy. awk will try to find the longest match and that will include the second tag: </i>.
+
+To limit the match to the shortest possible string, we have to use this expression:
+
+/<[^>]+> matches only <i>italic text</i>
+                      ---
+
+
