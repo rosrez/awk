@@ -1,0 +1,28 @@
+@@
+1. We can put longer awk programs in separate scripts. For example, this program:
+
+$ awk '{ if (NF < 8 ) {print "short line:", $0} else { print "long line:", $0 } }' dukeofyork.txt
+
+Can be placed in a script file of its own, like this:
+
+{                                       <---- NOTE THE OPENING BRACE FOR THE PROGRAM
+    if (NF > 8) {
+        print "Short line:", $0
+    } else {
+        print "Long line:", $0
+    }
+}                                       <---- NOTE THE CLOSING BRACE FOR THE PROGRAM
+
+We can supply the program name to awk with the -f option:
+
+$ awk -f shortlong.awk dukeofyork.txt 
+Long line: The grand old Duke of York
+Long line: He had ten thousand men
+Short line: He marched them up to the top of the hill
+Long line: And he marched them down again
+Long line: And when they were up they were up
+Long line: And when they were down they were down
+Long line: And when they were only half-way up
+Long line: They were neither up nor down
+
+

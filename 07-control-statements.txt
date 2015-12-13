@@ -1,0 +1,38 @@
+@@
+1. IF:
+
+if (condition) {
+    ...
+}
+
+The braces are optional if there is only one 
+
+@@
+2. IF-ELSE
+
+if (condition) {
+    ...
+} else {
+    ...
+}
+
+EXAMPLE:
+
+$ awk '{ if (NF < 8 ) {print "short line:", $0} else { print "long line:", $0 } }' dukeofyork.txt 
+short line: The grand old Duke of York
+short line: He had ten thousand men
+long line: He marched them up to the top of the hill
+short line: And he marched them down again
+long line: And when they were up they were up
+long line: And when they were down they were down
+short line: And when they were only half-way up
+short line: They were neither up nor down
+
+@@
+3. FOR LOOP
+
+for (initialization; condition; increment) {
+    ... body
+}
+
+
