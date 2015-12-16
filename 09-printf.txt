@@ -1,0 +1,106 @@
+@@
+1. PRINTF
+
+EXAMPLE
+
+$ awk -F, '{printf("%s\t%s\t%d\n", $1, $2, $3)}' nameemailavg.csv
+
+printf() doesn't append newline to output by default.
+
+printf() doesn't rely on FS or OFS settings.
+
+@@
+2. WIDTH SPECIFIERS WITH PRINTF
+
+Given the uneven width of columns, the format we've just used produces output that is not quite readable:
+
+$ awk -F, '{printf("%s\t%s\t%d\n", $1, $2, $3)}' nameemailavg.csv 
+Art Venere  art@venere.org  256
+Lenna Paprocki  lpaprocki@hotmail.com   259
+Donette Foller  donette.foller@cox.net  282
+Simona Morasca  simona@morasca.com  139
+Dominque Dickerson  dominque.dickerson@dickerson.org    167
+Leotta Dilliard leota@hotmail.com   253
+Sage Wieser sage_wieser@cox.net 155
+Kris Cho    kris@gmail.com  210
+Minna Amigon    minna_amigon@yahoo.com  95
+Abel Maclead    amaclead@gmail.com  255
+Kiley Caldarera kiley.caldarera@aol.com 172
+Graciela Ruta   gruta@cox.net   202
+Josephine Darakjy   josephine_darakjy@darakjy.org   178
+Cammy Albares   calbares@gmail.com  290
+Mattie Poquette mattie@aol.com  283
+Meaghan Garufi  meaghan@hotmail.com 227
+Gladys Rim  gladys.rim@rim.org  243
+Yuki Whobrey    yuki_whobrey@aol.com    128
+Fletcher Flosi  fletcher.flosi@yahoo.com    221
+
+A tab character cannot compensate for longer names or e-mail addresses. We can use width specifiers to deal with the problem. The following command pads output for field 1 to 20 characters (as a string), field 2 to 35 characters (as a string) and field 3 to 3 characters (as an integer). Note that this output is RIGHT-JUSTIFIED (good for integers, worse for strings).
+
+$ awk -F, '{printf("%20s %35s %3d\n", $1, $2, $3)}' nameemailavg.csv 
+          Art Venere                      art@venere.org 256
+      Lenna Paprocki               lpaprocki@hotmail.com 259
+      Donette Foller              donette.foller@cox.net 282
+      Simona Morasca                  simona@morasca.com 139
+  Dominque Dickerson    dominque.dickerson@dickerson.org 167
+     Leotta Dilliard                   leota@hotmail.com 253
+         Sage Wieser                 sage_wieser@cox.net 155
+            Kris Cho                      kris@gmail.com 210
+        Minna Amigon              minna_amigon@yahoo.com  95
+        Abel Maclead                  amaclead@gmail.com 255
+     Kiley Caldarera             kiley.caldarera@aol.com 172
+       Graciela Ruta                       gruta@cox.net 202
+   Josephine Darakjy       josephine_darakjy@darakjy.org 178
+       Cammy Albares                  calbares@gmail.com 290
+     Mattie Poquette                      mattie@aol.com 283
+      Meaghan Garufi                 meaghan@hotmail.com 227
+          Gladys Rim                  gladys.rim@rim.org 243
+        Yuki Whobrey                yuki_whobrey@aol.com 128
+      Fletcher Flosi            fletcher.flosi@yahoo.com 221
+
+We can use negative width values for string width specifiers to produce even better output (the output is LEFT-JUSTIFIED):
+
+$ awk -F, '{printf("%-20s %-35s %3d\n", $1, $2, $3)}' nameemailavg.csv 
+Art Venere           art@venere.org                      256
+Lenna Paprocki       lpaprocki@hotmail.com               259
+Donette Foller       donette.foller@cox.net              282
+Simona Morasca       simona@morasca.com                  139
+Dominque Dickerson   dominque.dickerson@dickerson.org    167
+Leotta Dilliard      leota@hotmail.com                   253
+Sage Wieser          sage_wieser@cox.net                 155
+Kris Cho             kris@gmail.com                      210
+Minna Amigon         minna_amigon@yahoo.com               95
+Abel Maclead         amaclead@gmail.com                  255
+Kiley Caldarera      kiley.caldarera@aol.com             172
+Graciela Ruta        gruta@cox.net                       202
+Josephine Darakjy    josephine_darakjy@darakjy.org       178
+Cammy Albares        calbares@gmail.com                  290
+Mattie Poquette      mattie@aol.com                      283
+Meaghan Garufi       meaghan@hotmail.com                 227
+Gladys Rim           gladys.rim@rim.org                  243
+Yuki Whobrey         yuki_whobrey@aol.com                128
+Fletcher Flosi       fletcher.flosi@yahoo.com            221
+
+We can also use the floating point specifier to display the scores as floating point values. If we would like to produce output 6 characters wide with the precision of 2 decimal places, we use the %6.2f specifier:
+
+$ awk -F, '{printf("%-20s %-35s %6.2f\n", $1, $2, $3)}' nameemailavg.csv 
+Art Venere           art@venere.org                      256.62
+Lenna Paprocki       lpaprocki@hotmail.com               259.69
+Donette Foller       donette.foller@cox.net              282.33
+Simona Morasca       simona@morasca.com                  139.52
+Dominque Dickerson   dominque.dickerson@dickerson.org    167.05
+Leotta Dilliard      leota@hotmail.com                   253.64
+Sage Wieser          sage_wieser@cox.net                 155.56
+Kris Cho             kris@gmail.com                      210.79
+Minna Amigon         minna_amigon@yahoo.com               95.48
+Abel Maclead         amaclead@gmail.com                  255.77
+Kiley Caldarera      kiley.caldarera@aol.com             172.96
+Graciela Ruta        gruta@cox.net                       202.68
+Josephine Darakjy    josephine_darakjy@darakjy.org       178.88
+Cammy Albares        calbares@gmail.com                  290.45
+Mattie Poquette      mattie@aol.com                      283.24
+Meaghan Garufi       meaghan@hotmail.com                 227.15
+Gladys Rim           gladys.rim@rim.org                  243.46
+Yuki Whobrey         yuki_whobrey@aol.com                128.32
+Fletcher Flosi       fletcher.flosi@yahoo.com            221.39
+
