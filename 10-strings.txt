@@ -1,0 +1,37 @@
+@@
+1.
+
+@@
+2. length(string)
+
+Returns the length of 'string'
+
+@@
+3. index(haystack, needle) 
+
+Returns the index
+
+
+@@
+4. match(string, regexp)
+
+
+@@
+5. substr(string, pos, numchars)
+
+Returns the substring of 'string' starting at 'pos' that spans 'numchars' characters
+
+@@
+6. sub(regexp, newval [,string])
+
+Searches for 'regexp' and replace the match with 'newval'. If 'string' is omitted, $0 is assumed.
+
+@@
+7. gsub(regexp, newval [,string])
+
+Similar to sub(), but replaces each occurrence of a match (a global substitution).
+
+@@
+8. split(string, array [,regexp)
+
+Splits 'string' into an array of values using 'regexp' as the delimiter.

@@ -1,0 +1,27 @@
+@@
+1. ARRAY SYNTAX
+
+An array index can be any number or string.
+
+EXAMPLE
+
+$ awk '{a["first"]=$1; a["second"]=$2; a["third"]=$3; print a["third"]; print a["second"]; print a["first"]}'
+one two three       <--- STDIN
+three
+two
+one
+
+@@
+2. ORDER OF ASSOCIATIVE ARRAYS IS NOT PRESERVED
+
+EXAMPLE
+
+                    NOTE THE SPECIAL KIND OF 'FOR' LOOP USED HERE:
+                                                      vvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+$ awk '{a["first"]=$1; a["second"]=$2; a["third"]=$3; for (i in a ) {print i, a[i]} }'
+one two three
+first one
+third three                 <--- 'third' COMES AFTER 'first' BUT BEFORE 'second'
+second two
+
+
